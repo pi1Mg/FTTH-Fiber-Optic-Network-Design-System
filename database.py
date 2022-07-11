@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
 from qgis.core import *
 from qgis.gui import *
 from qgis.utils import *
-from PyQt4.QtSql import *
+from PyQt5.QtSql import *
 from sqlite3 import OperationalError
 
 import psycopg2
 import os.path
 
-from join_db_dialog import JoinDBDialog
-from projectOutput import Project
+from .join_db_dialog import JoinDBDialog
+from .projectOutput import Project
 
 class Database():
     def __init__(self, iface):
@@ -36,15 +37,15 @@ class Database():
         self.joinDB_dlg.tableWidget.setHorizontalHeaderItem(2, QTableWidgetItem("cena"))
 
         self.joinDB_dlg.tableWidget.clear()
-        values = [(1, 'Výkop - prostý terén - trávník, zeleň'.decode('utf-8'), 0),
-                  (2, 'Podvrt - průjezd, chodník, vjezd'.decode('utf-8'), 0),
-                  (3, 'Protlak'.decode('utf-8'), 0),
-                  (4, 'Překop - kostky'.decode('utf-8'), 0),
-                  (5, 'Překop - asfalt'.decode('utf-8'), 0),
-                  (6, 'Překop -polní cesta'.decode('utf-8'), 0),
-                  (7, 'Výkop chodník - stará dlažba'.decode('utf-8'), 0),
-                  (8, 'Výkop chodník - zámková dlažba nová'.decode('utf-8'), 0),
-                  (9, 'Výkop chodník - kostky'.decode('utf-8'), 0)]
+        values = [(1, 'Výkop - prostý terén - trávník, zeleň', 0),
+                  (2, 'Podvrt - průjezd, chodník, vjezd', 0),
+                  (3, 'Protlak', 0),
+                  (4, 'Překop - kostky', 0),
+                  (5, 'Překop - asfalt', 0),
+                  (6, 'Překop -polní cesta', 0),
+                  (7, 'Výkop chodník - stará dlažba', 0),
+                  (8, 'Výkop chodník - zámková dlažba nová', 0),
+                  (9, 'Výkop chodník - kostky', 0)]
 
         i = 0
         for row in values:
@@ -102,15 +103,15 @@ class Database():
             self.iface.messageBar().pushMessage("Error", "Some edit line is empty", level=QgsMessageBar.WARNING, duration=3)
 
     def fill_standard_values(self):
-        values = [(1, 'Výkop - prostý terén - trávník, zeleň'.decode('utf-8'), 100.00),
-                  (2, 'Podvrt - průjezd, chodník, vjezd'.decode('utf-8'), 200.00),
-                  (3, 'Protlak'.decode('utf-8'), 700.00),
-                  (4, 'Překop - kostky'.decode('utf-8'), 540.00),
-                  (5, 'Překop - asfalt'.decode('utf-8'), 633.00),
-                  (6, 'Překop -polní cesta'.decode('utf-8'), 200.00),
-                  (7, 'Výkop chodník - stará dlažba'.decode('utf-8'), 193.00),
-                  (8, 'Výkop chodník - zámková dlažba nová'.decode('utf-8'), 216.00),
-                  (9, 'Výkop chodník - kostky'.decode('utf-8'), 540.00)]
+        values = [(1, 'Výkop - prostý terén - trávník, zeleň', 100.00),
+                  (2, 'Podvrt - průjezd, chodník, vjezd', 200.00),
+                  (3, 'Protlak', 700.00),
+                  (4, 'Překop - kostky', 540.00),
+                  (5, 'Překop - asfalt', 633.00),
+                  (6, 'Překop -polní cesta', 200.00),
+                  (7, 'Výkop chodník - stará dlažba', 193.00),
+                  (8, 'Výkop chodník - zámková dlažba nová', 216.00),
+                  (9, 'Výkop chodník - kostky', 540.00)]
 
         i = 0
         for row in values:
@@ -127,7 +128,7 @@ class Database():
 
     def find_layer(self, name):
         v = False
-        for lyr in QgsMapLayerRegistry.instance().mapLayers().values():
+        for lyr in QgsProject.instance().mapLayers().values():
             if lyr.name() == name:
                 v = True
         return v
@@ -140,9 +141,9 @@ class Database():
             [QgsField("typ", QVariant.Int), QgsField("popis", QVariant.String), QgsField("cena", QVariant.Double)])
         layer.updateFields()
 
-        for row in xrange(self.joinDB_dlg.tableWidget.rowCount()):
+        for row in range(self.joinDB_dlg.tableWidget.rowCount()):
             item_list = []
-            for column in xrange(self.joinDB_dlg.tableWidget.columnCount()):
+            for column in range(self.joinDB_dlg.tableWidget.columnCount()):
                 item = self.joinDB_dlg.tableWidget.item(row, column)
                 item_list.append(item.text())
 
@@ -165,7 +166,7 @@ class Database():
                                                 level=QgsMessageBar.WARNING, duration=3)
 
         layer.setCrs(QgsCoordinateReferenceSystem(5514, QgsCoordinateReferenceSystem.EpsgCrsId))
-        QgsMapLayerRegistry.instance().addMapLayers([layer])
+        QgsProject.instance().addMapLayers([layer])
 
     def actualization_memory_layer(self, memory_layer):
         features = memory_layer.getFeatures()
@@ -173,8 +174,8 @@ class Database():
         for feat in features:
             feat_list.append(feat)
 
-        for row in xrange(self.joinDB_dlg.tableWidget.rowCount()):
-            for column in xrange(self.joinDB_dlg.tableWidget.columnCount()):
+        for row in range(self.joinDB_dlg.tableWidget.rowCount()):
+            for column in range(self.joinDB_dlg.tableWidget.columnCount()):
                 item = self.joinDB_dlg.tableWidget.item(row, column)
 
                 memory_layer.startEditing()
@@ -190,7 +191,7 @@ class Database():
             if not self.find_layer("typy_vykopu"):
                 self.create_memory_layer()
             else:
-                registry = QgsMapLayerRegistry.instance()
+                registry = QgsProject.instance()
                 typy_vykopu_layer = registry.mapLayersByName('typy_vykopu')[0]
                 self.actualization_memory_layer(typy_vykopu_layer)
 

@@ -8,7 +8,7 @@
 
 [general]
 name=Fiber Optic Network Design System
-qgisMinimumVersion=2.0
+qgisMinimumVersion=3.0
 description=This plugin designing network from RUIAN data
 version=0.1
 author=Miroslav Starý

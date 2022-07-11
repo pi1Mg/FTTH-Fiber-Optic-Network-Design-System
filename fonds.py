@@ -20,25 +20,30 @@
  *                                                                         *
  ***************************************************************************/
 """
-from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
-from PyQt4.QtGui import QAction, QIcon, QFileDialog, QColor, QPixmap
+# from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
+# from PyQt5.QtGui import QIcon, QFileDialog, QColor, QPixmap
 # Initialize Qt resources from file resources.py
-import resources
+# import resources
 # Import the code for the dialog
-from fonds_dialog import FiberOpticNetworkDesignSystemDialog
+from .fonds_dialog import FiberOpticNetworkDesignSystemDialog
 
 import os.path
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
 from qgis.core import *
 from qgis.gui import *
 from qgis.utils import *
 
-from projectOutput import Project
-from database import Database
-from graph import Graph
-from printClickedPoint import PrintClickedPoint
+from .projectOutput import Project
+from .database import Database
+from .graph import Graph
+from .printClickedPoint import PrintClickedPoint
+
+# QgsPoint.__hash__ = lambda self: self.asWkt()
+QgsPoint.__eq__ = lambda self, other: hash(self.asWkt()) == hash(other.asWkt())
+QgsPoint.__hash__ = lambda self: hash(self.asWkt())
 
 class FiberOpticNetworkDesignSystem():
     """QGIS Plugin Implementation."""
@@ -102,20 +107,32 @@ class FiberOpticNetworkDesignSystem():
     # connect toolbar icon with actions and run method
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
-        self.act = QAction(QIcon(":/plugins/FiberOpticNetworkDesignSystem/icons/net_icon.png"),
-                            QCoreApplication.translate("Plugin Toolbar", "Create Net"), self.iface.mainWindow())
+        self.act = QAction(
+            QIcon(os.path.join(self.plugin_dir, 'icons', 'net_icon.png')),
+            QCoreApplication.translate("Plugin Toolbar", "Create Net"),
+            self.iface.mainWindow()
+        )
         self.iface.addToolBarIcon(self.act)
-        QObject.connect(self.act, SIGNAL("triggered()"), self.run)
+        self.act.triggered.connect(self.run)
+        # QObject.connect(self.act, SIGNAL("triggered()"), self.run)
 
-        self.act2 = QAction(QIcon(":/plugins/FiberOpticNetworkDesignSystem/icons/db_icon.png"),
-                            QCoreApplication.translate("Plugin Toolbar", "Connect to DB"), self.iface.mainWindow())
+        self.act2 = QAction(
+            QIcon(os.path.join(self.plugin_dir, 'icons', 'db_icon.png')),
+            QCoreApplication.translate("Plugin Toolbar", "Connect to DB"),
+            self.iface.mainWindow()
+        )
         self.iface.addToolBarIcon(self.act2)
-        QObject.connect(self.act2, SIGNAL("triggered()"), self.new_database.run3)
+        self.act2.triggered.connect(self.new_database.run3)
+        # QObject.connect(self.act2, SIGNAL("triggered()"), self.new_database.run3)
 
-        self.act4 = QAction(QIcon(":/plugins/FiberOpticNetworkDesignSystem/icons/project_icon.png"),
-                            QCoreApplication.translate("Plugin Toolbar", "Create Project"), self.iface.mainWindow())
+        self.act4 = QAction(
+            QIcon(os.path.join(self.plugin_dir, 'icons', 'project_icon.png')),
+            QCoreApplication.translate("Plugin Toolbar", "Create Project"),
+            self.iface.mainWindow()
+        )
         self.iface.addToolBarIcon(self.act4)
-        QObject.connect(self.act4, SIGNAL("triggered()"), self.new_project.run4)
+        self.act4.triggered.connect(self.new_project.run4)
+        # QObject.connect(self.act4, SIGNAL("triggered()"), self.new_project.run4)
 
         self.canvas_clicked = PrintClickedPoint(self.iface.mapCanvas())
 
@@ -128,7 +145,7 @@ class FiberOpticNetworkDesignSystem():
 
     def find_layer(self, name):
         v = False
-        for lyr in QgsMapLayerRegistry.instance().mapLayers().values():
+        for lyr in QgsProject.instance().mapLayers().values():
             if lyr.name() == name:
                 v = True
         return v
@@ -141,7 +158,7 @@ class FiberOpticNetworkDesignSystem():
         layer_data.addAttributes(list_of_attr)
         layer.commitChanges()
 
-        #QgsMapLayerRegistry.instance().addMapLayer(layer)#, addToLegend=False)
+        #QgsProject.instance().addMapLayer(layer)#, addToLegend=False)
         return layer, layer_data
 
     # adding feature to line layer by 2 points in list
@@ -172,16 +189,17 @@ class FiberOpticNetworkDesignSystem():
                                                 level=QgsMessageBar.WARNING, duration=3)
 
         layer.setCrs(QgsCoordinateReferenceSystem(5514, QgsCoordinateReferenceSystem.EpsgCrsId))
-        QgsMapLayerRegistry.instance().addMapLayers([layer])
+        QgsProject.instance().addMapLayers([layer])
 
     # find point which is the most far from point in paramater
     def find_long_distance_points(self, point, multi_line_feat_geom):
+        point = QgsPointXY(point)
         d = QgsDistanceArea()
         longest_distance = 0
         longest_point = QgsPoint()
         for i in range(len(multi_line_feat_geom)):
             for j in range(len(multi_line_feat_geom[i])):
-                distance = d.measureLine(point, multi_line_feat_geom[i][j])
+                distance = d.measureLine(point, QgsPointXY(multi_line_feat_geom[i][j]))
                 if distance > longest_distance:
                     longest_distance = distance
                     longest_point = multi_line_feat_geom[i][j]
@@ -191,41 +209,49 @@ class FiberOpticNetworkDesignSystem():
     # find points where are crosses and put them to the set()
     def find_cross(self, line_layer, set_of_points):
         for i in line_layer.getFeatures():
-            if i.geometry() != None:
+            geo = i.geometry()
+            geo_signle_type = QgsWkbTypes.isSingleType(geo.wkbType())
+            # if i.geometry() != None:
+            if geo:
                 for j in line_layer.getFeatures():
-                    if j.geometry() != None:
+                    # if j.geometry() != None:
+                    if j.geometry():
                         if i.geometry().intersects(j.geometry()):
-                            p = i.geometry().intersection(j.geometry()).asPoint()
-                            if p != QgsPoint(0,0): # if intersection is with MultiPolyline, we get point(0,0)
-                                set_of_points.add(p)
+                            p = i.geometry().intersection(j.geometry()).get()[0].asPoint()
+                            # if p != QgsPoint(0,0): # if intersection is with MultiPolyline, we get point(0,0)
+                            set_of_points.add(p)
 
                 # Solve problem with MultiPolyLine
                 # for every PolyLine in MultiPolyLine find start and end point
                 # this solution fix start, end and cross points
-                geom = i.geometry().asPolyline()
-                if not geom:
-                    geom = i.geometry().asMultiPolyline()
+                if geo.type() == QgsWkbTypes.LineGeometry:
+                    if geo_single_type:
+                        geom = i.geometry().asPolyline()
+                    else:
+                        geom = i.geometry().asMultiPolyline()
 
-                    for g in geom:
-                        start_point = QgsPoint(g[0])
-                        end_point = QgsPoint(g[-1])
-                        set_of_points.add(start_point)
-                        set_of_points.add(end_point)
+                        for g in geom:
+                            start_point = QgsPoint(g[0])
+                            end_point = QgsPoint(g[-1])
+                            set_of_points.add(start_point)
+                            set_of_points.add(end_point)
 
     # find start and end of lines and put them as points to the set()
     def find_start_end_of_lines(self, line_layer, set_of_points):
         for feature in line_layer.getFeatures():
-            if feature.geometry() != None:
-                geom = feature.geometry().asPolyline()
+            geo = feature.geometry()
+            geo_single_type = QgsWkbTypes.isSingleType(geo.wkbType())
+            if geo.type() == QgsWkbTypes.LineGeometry:
+                if geo_single_type:
+                    geom = feature.geometry().asPolyline()
+                    start_point = QgsPoint(geom[0])
+                    end_point = QgsPoint(geom[-1])
 
-                if not geom: # layer ulice has PolyLine and MultiPolyLine
+                else: # layer ulice has PolyLine and MultiPolyLine
                     geom = feature.geometry().asMultiPolyline()
                     point = QgsPoint(geom[0][0])
                     start_point = self.find_long_distance_points(point, geom)
                     end_point = self.find_long_distance_points(start_point, geom)
-                else:
-                    start_point = QgsPoint(geom[0])
-                    end_point = QgsPoint(geom[-1])
 
                 set_of_points.add(start_point)
                 set_of_points.add(end_point)
@@ -373,7 +399,7 @@ class FiberOpticNetworkDesignSystem():
                                                     level=QgsMessageBar.WARNING, duration=3)
             else:
                 try:
-                    registry = QgsMapLayerRegistry.instance()
+                    registry = QgsProject.instance()
                     adresnimista_layer = registry.mapLayersByName('adresnimista')[0]
                     ulice_layer = registry.mapLayersByName('ulice')[0]
 
@@ -466,7 +492,10 @@ class FiberOpticNetworkDesignSystem():
                     self.load_shp_layer_to_qgis(dir_path + '/', 'shafts_point')
 
                     self.split_line_layer(ulice_layer, shafts_layer, net_layer)
-                    self.iface.legendInterface().setLayerVisible(net_layer, False)
+                    # self.iface.legendInterface().setLayerVisible(net_layer, False)
+                    QgsProject.instance().layerTreeRoot().findLayer(
+                        net_layer.id()
+                    ).setItemVisibilityChecked(False)
                     self.iface.messageBar().pushMessage("Shafts and edges line created.",
                                                         level=QgsMessageBar.INFO)
 
@@ -609,7 +638,7 @@ class FiberOpticNetworkDesignSystem():
     # creating connections to houses
     def create_connect_to_house(self):
         if not self.find_layer("connections_line"):
-            registry = QgsMapLayerRegistry.instance()
+            registry = QgsProject.instance()
             house_layer = registry.mapLayersByName('adresnimista')[0]
             street_layer = registry.mapLayersByName('ulice')[0]
             try:
@@ -677,7 +706,7 @@ class FiberOpticNetworkDesignSystem():
 
     # create new net by kruskal algorithm
     def create_net_by_kruskal(self):
-        registry = QgsMapLayerRegistry.instance()
+        registry = QgsProject.instance()
 
         try:
             dir_path = self.dlg.select_output_lineEdit.text()
@@ -754,7 +783,7 @@ class FiberOpticNetworkDesignSystem():
 
     # create new net by bellman/ford algorithm
     def create_net_by_bellman(self):
-        registry = QgsMapLayerRegistry.instance()
+        registry = QgsProject.instance()
 
         try:
             dir_path = self.dlg.select_output_lineEdit.text()
@@ -857,7 +886,7 @@ class FiberOpticNetworkDesignSystem():
     # method use next class to get mouse click coordinates
     def handle_click(self):
         self.dlg.start_point_lineEdit.clear()
-        registry = QgsMapLayerRegistry.instance()
+        registry = QgsProject.instance()
         try:
             shaft_layer = registry.mapLayersByName('shafts_point')[0]
 

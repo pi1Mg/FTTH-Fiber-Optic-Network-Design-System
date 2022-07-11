@@ -2,9 +2,9 @@
 
 import  qgis.core
 import sys
-from PyQt4.QtGui import QApplication
-from PyQt4.QtCore import Qt
-from PyQt4.QtTest import QTest
+from PyQt5.QtGui import QApplication
+from PyQt5.QtCore import Qt
+from PyQt5.QtTest import QTest
 from qgis.core import *
 from qgis.gui import *
 from qgis.utils import *
@@ -23,7 +23,7 @@ class DummyInterface(object):
         raise StopIteration
     def layers(self):
         # simulate iface.legendInterface().layers()
-        return QgsMapLayerRegistry.instance().mapLayers().values()
+        return QgsProject.instance().mapLayers().values()
 
 iface = DummyInterface()
 
@@ -43,17 +43,17 @@ class TestDatabase(TestCase):
         self.assertEqual(self.ui.lineEdit_password.text(), "")
         self.assertEqual(self.ui.textEdit_sql.toPlainText(), "SELECT * from public.typy_vykopu")
 
-        values = [(1, 'Výkop - prostý terén - trávník, zeleň'.decode('utf-8'), 0),
-                  (2, 'Podvrt - průjezd, chodník, vjezd'.decode('utf-8'), 0),
-                  (3, 'Protlak'.decode('utf-8'), 0),
-                  (4, 'Překop - kostky'.decode('utf-8'), 0),
-                  (5, 'Překop - asfalt'.decode('utf-8'), 0),
-                  (6, 'Překop -polní cesta'.decode('utf-8'), 0),
-                  (7, 'Výkop chodník - stará dlažba'.decode('utf-8'), 0),
-                  (8, 'Výkop chodník - zámková dlažba nová'.decode('utf-8'), 0),
-                  (9, 'Výkop chodník - kostky'.decode('utf-8'), 0)]
+        values = [(1, 'Výkop - prostý terén - trávník, zeleň', 0),
+                  (2, 'Podvrt - průjezd, chodník, vjezd', 0),
+                  (3, 'Protlak', 0),
+                  (4, 'Překop - kostky', 0),
+                  (5, 'Překop - asfalt', 0),
+                  (6, 'Překop -polní cesta', 0),
+                  (7, 'Výkop chodník - stará dlažba', 0),
+                  (8, 'Výkop chodník - zámková dlažba nová', 0),
+                  (9, 'Výkop chodník - kostky', 0)]
 
-        for row in xrange(self.ui.tableWidget.rowCount()):
+        for row in range(self.ui.tableWidget.rowCount()):
             self.assertEqual(self.ui.tableWidget.item(row, 0).text(), str(values[row][0]))
             self.assertEqual(self.ui.tableWidget.item(row, 1).text(), values[row][1])
             self.assertEqual(self.ui.tableWidget.item(row, 2).text(), str(values[row][2]))
@@ -64,7 +64,7 @@ class TestDatabase(TestCase):
 
     # test not empty table values
     def test_not_epmpty_widget_table(self):
-        for row in xrange(self.ui.tableWidget.rowCount()):
+        for row in range(self.ui.tableWidget.rowCount()):
             self.assertNotEqual(self.ui.tableWidget.item(row, 0).text(), "")
             self.assertNotEqual(self.ui.tableWidget.item(row, 1).text(), "")
             self.assertNotEqual(self.ui.tableWidget.item(row, 2).text(), "")
@@ -83,25 +83,25 @@ class TestDatabase(TestCase):
         self.assertEqual(self.ui.lineEdit_password.text(), "")
         self.assertEqual(self.ui.textEdit_sql.toPlainText(), "SELECT * from public.typy_vykopu")
 
-        for row in xrange(self.ui.tableWidget.rowCount()):
+        for row in range(self.ui.tableWidget.rowCount()):
             self.assertNotEqual(self.ui.tableWidget.item(row, 0).text(), 0)
             self.assertNotEqual(self.ui.tableWidget.item(row, 1).text(), 0)
             self.assertNotEqual(self.ui.tableWidget.item(row, 2).text(), 0)
 
     # test standard values
     def test_fill_standard_values(self):
-        values = [(1, 'Výkop - prostý terén - trávník, zeleň'.decode('utf-8'), 100.00),
-                  (2, 'Podvrt - průjezd, chodník, vjezd'.decode('utf-8'), 200.00),
-                  (3, 'Protlak'.decode('utf-8'), 700.00),
-                  (4, 'Překop - kostky'.decode('utf-8'), 540.00),
-                  (5, 'Překop - asfalt'.decode('utf-8'), 633.00),
-                  (6, 'Překop -polní cesta'.decode('utf-8'), 200.00),
-                  (7, 'Výkop chodník - stará dlažba'.decode('utf-8'), 193.00),
-                  (8, 'Výkop chodník - zámková dlažba nová'.decode('utf-8'), 216.00),
-                  (9, 'Výkop chodník - kostky'.decode('utf-8'), 540.00)]
+        values = [(1, 'Výkop - prostý terén - trávník, zeleň', 100.00),
+                  (2, 'Podvrt - průjezd, chodník, vjezd', 200.00),
+                  (3, 'Protlak', 700.00),
+                  (4, 'Překop - kostky', 540.00),
+                  (5, 'Překop - asfalt', 633.00),
+                  (6, 'Překop -polní cesta', 200.00),
+                  (7, 'Výkop chodník - stará dlažba', 193.00),
+                  (8, 'Výkop chodník - zámková dlažba nová', 216.00),
+                  (9, 'Výkop chodník - kostky', 540.00)]
 
         self.ui.pushButton_standard.click()
-        for row in xrange(self.ui.tableWidget.rowCount()):
+        for row in range(self.ui.tableWidget.rowCount()):
             self.assertEqual(self.ui.tableWidget.item(row, 0).text(), str(values[row][0]))
             self.assertEqual(self.ui.tableWidget.item(row, 1).text(), values[row][1])
             self.assertEqual(self.ui.tableWidget.item(row, 2).text(), str(values[row][2]))

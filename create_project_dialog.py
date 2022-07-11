@@ -23,13 +23,16 @@
 
 import os
 
-from PyQt4 import QtGui, uic
+from PyQt5 import QtGui, uic
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'create_project_dialog_base.ui'))
 
 
-class CreateProjectDialog(QtGui.QDialog, FORM_CLASS):
+class CreateProjectDialog(QDialog, FORM_CLASS):
     def __init__(self, parent=None):
         """Constructor."""
         super(CreateProjectDialog, self).__init__(parent)

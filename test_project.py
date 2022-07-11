@@ -3,9 +3,9 @@
 from qgis.core import *
 import sys
 import os.path
-from PyQt4.QtGui import QApplication
-from PyQt4.QtCore import Qt
-from PyQt4.QtTest import QTest
+from PyQt5.QtGui import QApplication
+from PyQt5.QtCore import Qt
+from PyQt5.QtTest import QTest
 from qgis.gui import *
 from qgis.utils import *
 
@@ -23,7 +23,7 @@ class DummyInterface(object):
         raise StopIteration
     def layers(self):
         # simulate iface.legendInterface().layers()
-        return QgsMapLayerRegistry.instance().mapLayers().values()
+        return QgsProject.instance().mapLayers().values()
 
 iface = DummyInterface()
 
@@ -46,9 +46,9 @@ class TestProject(TestCase):
     # test default values
     def test_defaults(self):
         self.assertEqual(self.ui.save_lineEdit.text(), "")
-        for i in xrange(self.ui.layers_listWidget_1.count()):
+        for i in range(self.ui.layers_listWidget_1.count()):
             self.assertNotEqual(str(self.ui.layers_listWidget_1.item(i).text()), "")
-        for i in xrange(self.ui.layers_listWidget_2.count()):
+        for i in range(self.ui.layers_listWidget_2.count()):
             self.assertEqual(str(self.ui.layers_listWidget_2.item(i).text()), "")
 
     # test dialog name
@@ -65,10 +65,10 @@ class TestProject(TestCase):
 
     def test_click_add_all_pushButton(self):
         self.ui.add_all_pushButton.click()
-        for i in xrange(self.ui.layers_listWidget_1.count()):
+        for i in range(self.ui.layers_listWidget_1.count()):
             self.assertEqual(str(self.ui.layers_listWidget_1.item(i).text()), "")
             print self.ui.layers_listWidget_1.item(i).text()
-        for i in xrange(self.ui.layers_listWidget_2.count()):
+        for i in range(self.ui.layers_listWidget_2.count()):
             self.assertNotEqual(str(self.ui.layers_listWidget_2.item(i).text()), "")
 
     def test_load_coefficients(self):

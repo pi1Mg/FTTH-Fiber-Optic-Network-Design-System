@@ -2,10 +2,10 @@
 
 import  qgis.core
 import sys
-from PyQt4 import QtCore
-from PyQt4.QtGui import QApplication
-from PyQt4.QtCore import *
-from PyQt4.QtTest import QTest
+from PyQt5 import QtCore
+from PyQt5.QtGui import QApplication
+from PyQt5.QtCore import *
+from PyQt5.QtTest import QTest
 from qgis.core import *
 from qgis.gui import *
 from qgis.utils import *
@@ -24,7 +24,7 @@ class DummyInterface(object):
         raise StopIteration
     def layers(self):
         # simulate iface.legendInterface().layers()
-        return QgsMapLayerRegistry.instance().mapLayers().values()
+        return QgsProject.instance().mapLayers().values()
 
 iface = DummyInterface()
 

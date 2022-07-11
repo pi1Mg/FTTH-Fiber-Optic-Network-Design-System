@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
 from qgis.core import *
 from qgis.gui import *
 from qgis.utils import *
 
 import os.path
 
-from create_project_dialog import CreateProjectDialog
-from graph import Graph
+from .create_project_dialog import CreateProjectDialog
+from .graph import Graph
 
 class Project():
     def __init__(self, iface):
@@ -55,7 +56,7 @@ class Project():
         for coef in coefficients:
             vyskyt.append(coef*round)
 
-        registry = QgsMapLayerRegistry.instance()
+        registry = QgsProject.instance()
         try:
             typy_vykopu_layer = registry.mapLayersByName('typy_vykopu')[0]
             costs = []
@@ -94,7 +95,7 @@ class Project():
     def add_all_layers_to_w1(self):
         self.create_project_dlg.layers_listWidget_1.clear()
 
-        layers = self.iface.legendInterface().layers()
+        layers = [ly for ly in QgsProject.instance().mapLayers().values()]
         layer_list = []
         for layer in layers:
             if layer.name() != "typy_vykopu":
@@ -106,7 +107,7 @@ class Project():
     def add_all_layers_to_w2(self):
         self.create_project_dlg.layers_listWidget_2.clear()
 
-        layers = self.iface.legendInterface().layers()
+        layers = [ly for ly in QgsProject.instance().mapLayers().values()]
         layer_list = []
         for layer in layers:
             if layer.name() != "typy_vykopu":
@@ -125,7 +126,7 @@ class Project():
 
     def add_label(self, composer, text, x, y):
         label = QgsComposerLabel(composer)
-        label.setText(text.decode('utf-8'))
+        label.setText(text)
         label.adjustSizeToText()
         label.setItemPosition(x, y)
         composer.addItem(label)
@@ -142,7 +143,7 @@ class Project():
             self.iface.messageBar().pushMessage("Error", "First select output directory please.",
                                                 level=QgsMessageBar.WARNING, duration=3)
         else:
-            layers = self.iface.legendInterface().layers()
+            layers = [ly for ly in QgsProject.instance().mapLayers().values()]
             selected_layer = None
 
             for layer in layers:
@@ -160,7 +161,7 @@ class Project():
 
             if selected_layer == None:
                 if item != "":
-                    for lyr in QgsMapLayerRegistry.instance().mapLayers().values():
+                    for lyr in QgsProject.instance().mapLayers().values():
                         if lyr.name() == item:
                             selected_layer = lyr
                             break
@@ -173,7 +174,7 @@ class Project():
                 mapfile = self.dir_name + "/" + "raster" + ".png"
                 self.iface.mapCanvas().saveAsImage(mapfile, pixmap)
 
-                mapRenderer = self.iface.mapCanvas().mapRenderer()
+                mapRenderer = self.iface.mapCanvas().mapSettings()
                 c = QgsComposition(mapRenderer)
                 w, h = c.paperWidth(), c.paperHeight()
 
@@ -199,7 +200,7 @@ class Project():
                 self.add_label(c, "Rozpočet [Kč]", x+90, h-y-50)
 
                 items = []
-                for index in xrange(self.create_project_dlg.layers_listWidget_2.count()):
+                for index in range(self.create_project_dlg.layers_listWidget_2.count()):
                     items.append(self.create_project_dlg.layers_listWidget_2.item(index))
 
                 layer_list = []
@@ -250,7 +251,7 @@ class Project():
                 c.render(pdfPainter, paperRectPixel, paperRectMM)
                 pdfPainter.end()
 
-                mapRenderer2 = self.iface.mapCanvas().mapRenderer()
+                mapRenderer2 = self.iface.mapCanvas().mapSettings()
                 c2 = QgsComposition(mapRenderer2)
                 c2.setPlotStyle(QgsComposition.Print)
 
@@ -275,31 +276,37 @@ class Project():
 
     def set_visible_layers(self):
         items = []
-        for index in xrange(self.create_project_dlg.layers_listWidget_2.count()):
+        for index in range(self.create_project_dlg.layers_listWidget_2.count()):
             items.append(self.create_project_dlg.layers_listWidget_2.item(index))
 
         for item in items:
             layer = self.find_layer(item.text())
-            self.iface.legendInterface().setLayerVisible(layer, True)
+            QgsProject.instance().layerTreeRoot().findLayer(
+                layer.id()
+            ).setItemVisibilityChecked(False)
+            # self.iface.legendInterface().setLayerVisible(layer, True)
 
         items2 = []
-        for index in xrange(self.create_project_dlg.layers_listWidget_1.count()):
+        for index in range(self.create_project_dlg.layers_listWidget_1.count()):
             items2.append(self.create_project_dlg.layers_listWidget_1.item(index))
 
         for item in items2:
             layer = self.find_layer(item.text())
-            self.iface.legendInterface().setLayerVisible(layer, False)
+            QgsProject.instance().layerTreeRoot().findLayer(
+                layer.id()
+            ).setItemVisibilityChecked(False)
+            # self.iface.legendInterface().setLayerVisible(layer, False)
 
     def find_layer(self, name):
         selected_layer = None
-        for lyr in QgsMapLayerRegistry.instance().mapLayers().values():
+        for lyr in QgsProject.instance().mapLayers().values():
             if lyr.name() == name:
                 selected_layer = lyr
                 break
         return selected_layer
 
     def find_longest_path(self, edges_layer):
-        registry = QgsMapLayerRegistry.instance()
+        registry = QgsProject.instance()
         shaft_layer = registry.mapLayersByName('shafts_point')[0]
         #edges_layer = registry.mapLayersByName('edges_line')[0]
 

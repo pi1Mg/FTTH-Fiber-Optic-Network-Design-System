@@ -1,5 +1,5 @@
 from qgis.gui import QgsMapCanvas, QgsMapToolEmitPoint
-from PyQt4.QtCore import *
+from PyQt5.QtCore import *
 from qgis.core import *
 
 
@@ -9,7 +9,7 @@ class PrintClickedPoint(QgsMapToolEmitPoint):
         QgsMapToolEmitPoint.__init__(self, self.canvas)
 
     def canvasPressEvent(self, e):
-        registry = QgsMapLayerRegistry.instance()
+        registry = QgsProject.instance()
         try:
             shaft_layer = registry.mapLayersByName('shafts_point')[0]
 

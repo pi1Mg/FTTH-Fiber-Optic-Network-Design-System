@@ -1,0 +1,211 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_EXCMD	mixed	/number, pattern, mixed, or combineV2/
+!_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
+!_TAG_PROC_CWD	/home/mladen/projects/qgis/FTTH-Fiber-Optic-Network-Design-System/	//
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	5.9.0	//
+ALLSPHINXOPTS	help/Makefile	/^ALLSPHINXOPTS   = -d $(BUILDDIR)\/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) source$/;"	m
+ALLSPHINXOPTS	help/make.bat	/^	set ALLSPHINXOPTS=-D latex_paper_size=%PAPER% %ALLSPHINXOPTS%$/;"	v
+ALLSPHINXOPTS	help/make.bat	/^set ALLSPHINXOPTS=-d %BUILDDIR%\/doctrees %SPHINXOPTS% source$/;"	v
+BUILDDIR	help/Makefile	/^BUILDDIR      = build$/;"	m
+BUILDDIR	help/make.bat	/^set BUILDDIR=build$/;"	v
+CreateProjectDialog	create_project_dialog.py	/^class CreateProjectDialog(QDialog, FORM_CLASS):$/;"	c
+Database	database.py	/^class Database():$/;"	c
+DummyInterface	test_database.py	/^class DummyInterface(object):$/;"	c
+DummyInterface	test_fonds.py	/^class DummyInterface(object):$/;"	c
+DummyInterface	test_project.py	/^class DummyInterface(object):$/;"	c
+ENDPOINT	plugin_upload.py	/^ENDPOINT = '\/plugins\/RPC2\/'$/;"	v
+FORM_CLASS	create_project_dialog.py	/^FORM_CLASS, _ = uic.loadUiType(os.path.join($/;"	v
+FORM_CLASS	fonds_dialog.py	/^FORM_CLASS, _ = uic.loadUiType(os.path.join($/;"	v
+FORM_CLASS	join_db_dialog.py	/^FORM_CLASS, _ = uic.loadUiType(os.path.join($/;"	v
+FTTH-Fiber-Optic-Network-Design-System	README.md	/^# FTTH-Fiber-Optic-Network-Design-System$/;"	c
+FiberOpticNetworkDesignSystem	fonds.py	/^class FiberOpticNetworkDesignSystem():$/;"	c
+FiberOpticNetworkDesignSystemDialog	fonds_dialog.py	/^class FiberOpticNetworkDesignSystemDialog(QDialog, FORM_CLASS):$/;"	c
+Graph	graph.py	/^class Graph():$/;"	c
+Indices and tables	help/source/index.rst	/^Indices and tables$/;"	H
+JoinDBDialog	join_db_dialog.py	/^class JoinDBDialog(QDialog, FORM_CLASS):$/;"	c
+PAPER	help/Makefile	/^PAPER         =$/;"	m
+PAPER	help/make.bat	/^	echo.  latex      to make LaTeX files, you can set PAPER=a4 or PAPER=letter$/;"	v
+PAPEROPT_a4	help/Makefile	/^PAPEROPT_a4     = -D latex_paper_size=a4$/;"	m
+PAPEROPT_letter	help/Makefile	/^PAPEROPT_letter = -D latex_paper_size=letter$/;"	m
+PORT	plugin_upload.py	/^PORT = '80'$/;"	v
+PROTOCOL	plugin_upload.py	/^PROTOCOL = 'http'$/;"	v
+Plugin Builder Results	README.html	/^<h3>Plugin Builder Results<\/h3>$/;"	j
+PrintClickedPoint	printClickedPoint.py	/^class PrintClickedPoint(QgsMapToolEmitPoint):$/;"	c
+Project	projectOutput.py	/^class Project():$/;"	c
+SERVER	plugin_upload.py	/^SERVER = 'plugins.qgis.org'$/;"	v
+SPHINXBUILD	help/Makefile	/^SPHINXBUILD   = sphinx-build$/;"	m
+SPHINXBUILD	help/make.bat	/^	set SPHINXBUILD=sphinx-build$/;"	v
+SPHINXOPTS	help/Makefile	/^SPHINXOPTS    =$/;"	m
+TestDatabase	test_database.py	/^class TestDatabase(TestCase):$/;"	c
+TestFiberOpticNetworkDesignSystem	test_fonds.py	/^class TestFiberOpticNetworkDesignSystem(TestCase):$/;"	c
+TestProject	test_project.py	/^class TestProject(TestCase):$/;"	c
+VERBOSE	plugin_upload.py	/^VERBOSE = False$/;"	v
+What's Next	README.html	/^<h3>What's Next<\/h3>$/;"	j
+_	create_project_dialog.py	/^FORM_CLASS, _ = uic.loadUiType(os.path.join($/;"	v
+_	fonds_dialog.py	/^FORM_CLASS, _ = uic.loadUiType(os.path.join($/;"	v
+_	join_db_dialog.py	/^FORM_CLASS, _ = uic.loadUiType(os.path.join($/;"	v
+__getattr__	test_database.py	/^    def __getattr__(self, *args, **kwargs):$/;"	m	class:DummyInterface
+__getattr__	test_fonds.py	/^    def __getattr__(self, *args, **kwargs):$/;"	m	class:DummyInterface
+__getattr__	test_project.py	/^    def __getattr__(self, *args, **kwargs):$/;"	m	class:DummyInterface
+__init__	create_project_dialog.py	/^    def __init__(self, parent=None):$/;"	m	class:CreateProjectDialog
+__init__	database.py	/^    def __init__(self, iface):$/;"	m	class:Database
+__init__	fonds.py	/^    def __init__(self, iface):$/;"	m	class:FiberOpticNetworkDesignSystem
+__init__	fonds_dialog.py	/^    def __init__(self, parent=None):$/;"	m	class:FiberOpticNetworkDesignSystemDialog
+__init__	graph.py	/^    def __init__(self, graph_dict=None):$/;"	m	class:Graph
+__init__	join_db_dialog.py	/^    def __init__(self, parent=None):$/;"	m	class:JoinDBDialog
+__init__	printClickedPoint.py	/^    def __init__(self, canvas):$/;"	m	class:PrintClickedPoint
+__init__	projectOutput.py	/^    def __init__(self, iface):$/;"	m	class:Project
+__iter__	test_database.py	/^    def __iter__(self):$/;"	m	class:DummyInterface
+__iter__	test_fonds.py	/^    def __iter__(self):$/;"	m	class:DummyInterface
+__iter__	test_project.py	/^    def __iter__(self):$/;"	m	class:DummyInterface
+actualization_memory_layer	database.py	/^    def actualization_memory_layer(self, memory_layer):$/;"	m	class:Database
+add_all_layers_to_w1	projectOutput.py	/^    def add_all_layers_to_w1(self):$/;"	m	class:Project
+add_all_layers_to_w2	projectOutput.py	/^    def add_all_layers_to_w2(self):$/;"	m	class:Project
+add_feature_to_line_layer	fonds.py	/^    def add_feature_to_line_layer(self, layer_data, points, attr_values):$/;"	m	class:FiberOpticNetworkDesignSystem
+add_label	projectOutput.py	/^    def add_label(self, composer, text, x, y):$/;"	m	class:Project
+add_label_number	projectOutput.py	/^    def add_label_number(self, composer, text, x, y):$/;"	m	class:Project
+add_layer_to_w1	projectOutput.py	/^    def add_layer_to_w1(self):$/;"	m	class:Project
+add_layer_to_w2	projectOutput.py	/^    def add_layer_to_w2(self):$/;"	m	class:Project
+args	plugin_upload.py	/^    options, args = parser.parse_args()$/;"	v
+bellman_ford	graph.py	/^    def bellman_ford(self, graph, source):$/;"	m	class:Graph
+canvasPressEvent	printClickedPoint.py	/^    def canvasPressEvent(self, e):$/;"	m	class:PrintClickedPoint
+change_graph_repre	graph.py	/^    def change_graph_repre(self, graph):$/;"	m	class:Graph
+changes	help/Makefile	/^changes:$/;"	t
+classFactory	__init__.py	/^def classFactory(iface):  # pylint: disable=invalid-name$/;"	f
+clean	help/Makefile	/^clean:$/;"	t
+connect_to_db	database.py	/^    def connect_to_db(self):$/;"	m	class:Database
+copy_geom	fonds.py	/^    def copy_geom(self, from_line_layer, to_line_layer, point_layer, number_feat_net):$/;"	m	class:FiberOpticNetworkDesignSystem
+copyright	help/source/conf.py	/^copyright = u'2013, Miroslav Starý'$/;"	v
+count_budget	projectOutput.py	/^    def count_budget(self, round):$/;"	m	class:Project
+create_connect_to_house	fonds.py	/^    def create_connect_to_house(self):$/;"	m	class:FiberOpticNetworkDesignSystem
+create_graph	graph.py	/^    def create_graph(self, shaft_layer, edges_layer):$/;"	m	class:Graph
+create_layer	fonds.py	/^    def create_layer(self, type, name, list_of_attr):$/;"	m	class:FiberOpticNetworkDesignSystem
+create_memory_layer	database.py	/^    def create_memory_layer(self):$/;"	m	class:Database
+create_net_by_bellman	fonds.py	/^    def create_net_by_bellman(self):$/;"	m	class:FiberOpticNetworkDesignSystem
+create_net_by_kruskal	fonds.py	/^    def create_net_by_kruskal(self):$/;"	m	class:FiberOpticNetworkDesignSystem
+create_new_shaft_on_closest_point	fonds.py	/^    def create_new_shaft_on_closest_point(self, ulice_layer, shafts_layer, net_layer, house_poin/;"	m	class:FiberOpticNetworkDesignSystem
+create_shafts	fonds.py	/^    def create_shafts(self):$/;"	m	class:FiberOpticNetworkDesignSystem
+devhelp	help/Makefile	/^devhelp:$/;"	t
+dijkstra	graph.py	/^    def dijkstra(self, distances, nodes, current):$/;"	m	class:Graph
+dirhtml	help/Makefile	/^dirhtml:$/;"	t
+doctest	help/Makefile	/^doctest:$/;"	t
+dummy	test_database.py	/^        def dummy(*args, **kwargs):$/;"	f	member:DummyInterface.__getattr__	file:
+dummy	test_fonds.py	/^        def dummy(*args, **kwargs):$/;"	f	member:DummyInterface.__getattr__	file:
+dummy	test_project.py	/^        def dummy(*args, **kwargs):$/;"	f	member:DummyInterface.__getattr__	file:
+end	help/make.bat	/^:end$/;"	l
+epub	help/Makefile	/^epub:$/;"	t
+exclude_patterns	help/source/conf.py	/^exclude_patterns = []$/;"	v
+extensions	help/source/conf.py	/^extensions = ['sphinx.ext.todo', 'sphinx.ext.pngmath', 'sphinx.ext.viewcode']$/;"	v
+fill_standard_values	database.py	/^    def fill_standard_values(self):$/;"	m	class:Database
+filter_by_id	graph.py	/^    def filter_by_id(self, fid, layer):$/;"	m	class:Graph
+find	graph.py	/^    def find(self, parent, vertice):$/;"	m	class:Graph
+find_closest_feat	fonds.py	/^    def find_closest_feat(self, layer, qgs_index, point, del_feat):$/;"	m	class:FiberOpticNetworkDesignSystem
+find_cross	fonds.py	/^    def find_cross(self, line_layer, set_of_points):$/;"	m	class:FiberOpticNetworkDesignSystem
+find_edge	fonds.py	/^    def find_edge(self, edge_layer, shaft_id_1, shaft_id_2):$/;"	m	class:FiberOpticNetworkDesignSystem
+find_intersect_layer	fonds.py	/^    def find_intersect_layer(self, feat, layer):$/;"	m	class:FiberOpticNetworkDesignSystem
+find_layer	database.py	/^    def find_layer(self, name):$/;"	m	class:Database
+find_layer	fonds.py	/^    def find_layer(self, name):$/;"	m	class:FiberOpticNetworkDesignSystem
+find_layer	projectOutput.py	/^    def find_layer(self, name):$/;"	m	class:Project
+find_long_distance_points	fonds.py	/^    def find_long_distance_points(self, point, multi_line_feat_geom):$/;"	m	class:FiberOpticNetworkDesignSystem
+find_longest_path	projectOutput.py	/^    def find_longest_path(self, edges_layer):$/;"	m	class:Project
+find_point_feature	fonds.py	/^    def find_point_feature(self, point, layer):$/;"	m	class:FiberOpticNetworkDesignSystem
+find_possible_connections	fonds.py	/^    def find_possible_connections(self, shafts_layer, index_shafts, house_point):$/;"	m	class:FiberOpticNetworkDesignSystem
+find_start_end_of_lines	fonds.py	/^    def find_start_end_of_lines(self, line_layer, set_of_points):$/;"	m	class:FiberOpticNetworkDesignSystem
+get_graph	graph.py	/^    def get_graph(self):$/;"	m	class:Graph
+get_net_parameters	fonds.py	/^    def get_net_parameters(self):$/;"	m	class:FiberOpticNetworkDesignSystem
+handle_click	fonds.py	/^    def handle_click(self):$/;"	m	class:FiberOpticNetworkDesignSystem
+help	README.html	/^<div id='help' style='font-size:.9em;'>$/;"	I
+help	help/Makefile	/^help:$/;"	t
+hide_password	plugin_upload.py	/^def hide_password(url, start=6):$/;"	f
+html	help/Makefile	/^html:$/;"	t
+html_static_path	help/source/conf.py	/^html_static_path = ['_static']$/;"	v
+html_theme	help/source/conf.py	/^html_theme = 'default'$/;"	v
+htmlhelp	help/Makefile	/^htmlhelp:$/;"	t
+htmlhelp_basename	help/source/conf.py	/^htmlhelp_basename = 'TemplateClassdoc'$/;"	v
+iface	test_database.py	/^iface = DummyInterface()$/;"	v
+iface	test_fonds.py	/^iface = DummyInterface()$/;"	v
+iface	test_project.py	/^iface = DummyInterface()$/;"	v
+initGui	fonds.py	/^    def initGui(self):$/;"	m	class:FiberOpticNetworkDesignSystem
+json	help/Makefile	/^json:$/;"	t
+kruskal	graph.py	/^    def kruskal(self, parent, rank, graph):$/;"	m	class:Graph
+latex	help/Makefile	/^latex:$/;"	t
+latex_documents	help/source/conf.py	/^latex_documents = [$/;"	v
+latexpdf	help/Makefile	/^latexpdf:$/;"	t
+layers	test_database.py	/^    def layers(self):$/;"	m	class:DummyInterface
+layers	test_fonds.py	/^    def layers(self):$/;"	m	class:DummyInterface
+layers	test_project.py	/^    def layers(self):$/;"	m	class:DummyInterface
+linkcheck	help/Makefile	/^linkcheck:$/;"	t
+load_coefficients	projectOutput.py	/^    def load_coefficients(self):$/;"	m	class:Project
+load_shp_layer_to_qgis	database.py	/^    def load_shp_layer_to_qgis(self, layer_name):$/;"	m	class:Database
+load_shp_layer_to_qgis	fonds.py	/^    def load_shp_layer_to_qgis(self, filepath, layer_name):$/;"	m	class:FiberOpticNetworkDesignSystem
+main	plugin_upload.py	/^def main(parameters, arguments):$/;"	f
+make_set	graph.py	/^    def make_set(self, parent, rank, vertice):$/;"	m	class:Graph
+man	help/Makefile	/^man:$/;"	t
+man_pages	help/source/conf.py	/^man_pages = [$/;"	v
+master_doc	help/source/conf.py	/^master_doc = 'index'$/;"	v
+next	test_database.py	/^    def next(self):$/;"	m	class:DummyInterface
+next	test_fonds.py	/^    def next(self):$/;"	m	class:DummyInterface
+next	test_project.py	/^    def next(self):$/;"	m	class:DummyInterface
+not_empty	database.py	/^    def not_empty(self, lineEdit):$/;"	m	class:Database
+options	plugin_upload.py	/^    options, args = parser.parse_args()$/;"	v
+parser	plugin_upload.py	/^    parser = OptionParser(usage="%prog [options] plugin.zip")$/;"	v
+pickle	help/Makefile	/^pickle:$/;"	t
+project	help/source/conf.py	/^project = u'FiberOpticNetworkDesignSystem'$/;"	v
+put_points_on_end	fonds.py	/^    def put_points_on_end(self, line_layer, index_streets, point_layer):$/;"	m	class:FiberOpticNetworkDesignSystem
+put_shafts_on_street	fonds.py	/^    def put_shafts_on_street(self, house_point, closest_street_code, shafts_layer):$/;"	m	class:FiberOpticNetworkDesignSystem
+pygments_style	help/source/conf.py	/^pygments_style = 'sphinx'$/;"	v
+qCleanupResources	resources.py	/^def qCleanupResources():$/;"	f
+qInitResources	resources.py	/^def qInitResources():$/;"	f
+qt_resource_data	resources.py	/^qt_resource_data = "\\$/;"	v
+qt_resource_name	resources.py	/^qt_resource_name = "\\$/;"	v
+qt_resource_struct	resources.py	/^qt_resource_struct = "\\$/;"	v
+qthelp	help/Makefile	/^qthelp:$/;"	t
+release	help/source/conf.py	/^release = '0.1'$/;"	v
+res	plugin_upload.py	/^        res = raw_input()$/;"	v
+run	fonds.py	/^    def run(self):$/;"	m	class:FiberOpticNetworkDesignSystem
+run3	database.py	/^    def run3(self):$/;"	m	class:Database
+run4	projectOutput.py	/^    def run4(self):$/;"	m	class:Project
+save_views	projectOutput.py	/^    def save_views(self):$/;"	m	class:Project
+select_output_dir	projectOutput.py	/^    def select_output_dir(self):$/;"	m	class:Project
+select_output_file	fonds.py	/^    def select_output_file(self):$/;"	m	class:FiberOpticNetworkDesignSystem
+setUp	test_database.py	/^    def setUp(self):$/;"	m	class:TestDatabase
+setUp	test_fonds.py	/^    def setUp(self):$/;"	m	class:TestFiberOpticNetworkDesignSystem
+setUp	test_project.py	/^    def setUp(self):$/;"	m	class:TestProject
+set_visible_layers	projectOutput.py	/^    def set_visible_layers(self):$/;"	m	class:Project
+singlehtml	help/Makefile	/^singlehtml:$/;"	t
+source_suffix	help/source/conf.py	/^source_suffix = '.rst'$/;"	v
+split_line_layer	fonds.py	/^    def split_line_layer(self, line_layer, point_layer, net_layer):$/;"	m	class:FiberOpticNetworkDesignSystem
+start_choosen_alg	fonds.py	/^    def start_choosen_alg(self):$/;"	m	class:FiberOpticNetworkDesignSystem
+sum_length	projectOutput.py	/^    def sum_length(self, layer):$/;"	m	class:Project
+templates_path	help/source/conf.py	/^templates_path = ['_templates']$/;"	v
+test_change_coordinates	test_fonds.py	/^    def test_change_coordinates(self):$/;"	m	class:TestFiberOpticNetworkDesignSystem
+test_click_add_all_pushButton	test_project.py	/^    def test_click_add_all_pushButton(self):$/;"	m	class:TestProject
+test_click_widget	test_database.py	/^    def test_click_widget(self):$/;"	m	class:TestDatabase
+test_click_widget	test_fonds.py	/^    def test_click_widget(self):$/;"	m	class:TestFiberOpticNetworkDesignSystem
+test_click_widget	test_project.py	/^    def test_click_widget(self):$/;"	m	class:TestProject
+test_connect_to_db	test_database.py	/^    def test_connect_to_db(self):$/;"	m	class:TestDatabase
+test_count_budget	test_project.py	/^    def test_count_budget(self):$/;"	m	class:TestProject
+test_defaults	test_database.py	/^    def test_defaults(self):$/;"	m	class:TestDatabase
+test_defaults	test_fonds.py	/^    def test_defaults(self):$/;"	m	class:TestFiberOpticNetworkDesignSystem
+test_defaults	test_project.py	/^    def test_defaults(self):$/;"	m	class:TestProject
+test_dlg_name	test_database.py	/^    def test_dlg_name(self):$/;"	m	class:TestDatabase
+test_dlg_name	test_fonds.py	/^    def test_dlg_name(self):$/;"	m	class:TestFiberOpticNetworkDesignSystem
+test_dlg_name	test_project.py	/^    def test_dlg_name(self):$/;"	m	class:TestProject
+test_fill_standard_values	test_database.py	/^    def test_fill_standard_values(self):$/;"	m	class:TestDatabase
+test_load_coefficients	test_project.py	/^    def test_load_coefficients(self):$/;"	m	class:TestProject
+test_not_empty	test_fonds.py	/^    def test_not_empty(self):$/;"	m	class:TestFiberOpticNetworkDesignSystem
+test_not_epmpty_widget_table	test_database.py	/^    def test_not_epmpty_widget_table(self):$/;"	m	class:TestDatabase
+test_sum_length	test_project.py	/^    def test_sum_length(self):$/;"	m	class:TestProject
+text	help/Makefile	/^text:$/;"	t
+tr	fonds.py	/^    def tr(self, message):$/;"	m	class:FiberOpticNetworkDesignSystem
+union	graph.py	/^    def union(self, parent, rank, vertice1, vertice2):$/;"	m	class:Graph
+union2	graph.py	/^    def union2(self, dict1, dict2):$/;"	m	class:Graph
+unload	fonds.py	/^    def unload(self):$/;"	m	class:FiberOpticNetworkDesignSystem
+username	plugin_upload.py	/^        username = getpass.getuser()$/;"	v
+version	help/source/conf.py	/^version = '0.1'$/;"	v
