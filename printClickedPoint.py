@@ -31,4 +31,4 @@ class PrintClickedPoint(QgsMapToolEmitPoint):
 
         except IndexError:
             self.iface.messageBar().pushMessage("Error", "Need to create shafts before selecting",
-                                                level=QgsMessageBar.WARNING, duration=3)
+                                                level=Qgis.Warning, duration=3)

@@ -98,9 +98,9 @@ class Database():
 
             except OperationalError:
                 self.iface.messageBar().pushMessage("Error", "Failed to connect to the database",
-                                                level=QgsMessageBar.WARNING, duration=10)
+                                                level=Qgis.Warning, duration=10)
         else:
-            self.iface.messageBar().pushMessage("Error", "Some edit line is empty", level=QgsMessageBar.WARNING, duration=3)
+            self.iface.messageBar().pushMessage("Error", "Some edit line is empty", level=Qgis.Warning, duration=3)
 
     def fill_standard_values(self):
         values = [(1, 'Výkop - prostý terén - trávník, zeleň', 100.00),
@@ -163,7 +163,7 @@ class Database():
                                layer_name, 'ogr')
         if not layer.isValid():
             self.iface.messageBar().pushMessage("Error", "Layer %s did not load" % layer.name(),
-                                                level=QgsMessageBar.WARNING, duration=3)
+                                                level=Qgis.Warning, duration=3)
 
         layer.setCrs(QgsCoordinateReferenceSystem(5514, QgsCoordinateReferenceSystem.EpsgCrsId))
         QgsProject.instance().addMapLayers([layer])

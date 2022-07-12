@@ -71,7 +71,7 @@ class Project():
                 budget = budget + cena
         except IndexError:
             self.iface.messageBar().pushMessage("Error", "Budget is 0, first fill database table",
-                                                level=QgsMessageBar.WARNING, duration=3)
+                                                level=Qgis.Warning, duration=3)
         return budget
 
     def add_layer_to_w1(self):
@@ -141,7 +141,7 @@ class Project():
     def save_views(self):
         if self.dir_name == "":
             self.iface.messageBar().pushMessage("Error", "First select output directory please.",
-                                                level=QgsMessageBar.WARNING, duration=3)
+                                                level=Qgis.Warning, duration=3)
         else:
             layers = [ly for ly in QgsProject.instance().mapLayers().values()]
             selected_layer = None
@@ -272,7 +272,7 @@ class Project():
                 c2.render(pdfPainter2, paperRectPixel2, paperRectMM2)
                 pdfPainter2.end()
 
-                self.iface.messageBar().pushMessage("Document successfully generated.", level=QgsMessageBar.INFO)
+                self.iface.messageBar().pushMessage("Document successfully generated.", level=Qgis.Info)
 
     def set_visible_layers(self):
         items = []

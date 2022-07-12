@@ -162,10 +162,15 @@ put_shafts_on_street	fonds.py	/^    def put_shafts_on_street(self, house_point, 
 pygments_style	help/source/conf.py	/^pygments_style = 'sphinx'$/;"	v
 qCleanupResources	resources.py	/^def qCleanupResources():$/;"	f
 qInitResources	resources.py	/^def qInitResources():$/;"	f
-qt_resource_data	resources.py	/^qt_resource_data = "\\$/;"	v
-qt_resource_name	resources.py	/^qt_resource_name = "\\$/;"	v
-qt_resource_struct	resources.py	/^qt_resource_struct = "\\$/;"	v
+qt_resource_data	resources.py	/^qt_resource_data = b"\\$/;"	v
+qt_resource_name	resources.py	/^qt_resource_name = b"\\$/;"	v
+qt_resource_struct	resources.py	/^    qt_resource_struct = qt_resource_struct_v1$/;"	v
+qt_resource_struct	resources.py	/^    qt_resource_struct = qt_resource_struct_v2$/;"	v
+qt_resource_struct_v1	resources.py	/^qt_resource_struct_v1 = b"\\$/;"	v
+qt_resource_struct_v2	resources.py	/^qt_resource_struct_v2 = b"\\$/;"	v
+qt_version	resources.py	/^qt_version = [int(v) for v in QtCore.qVersion().split('.')]$/;"	v
 qthelp	help/Makefile	/^qthelp:$/;"	t
+rcc_version	resources.py	/^    rcc_version = 1$/;"	v
 release	help/source/conf.py	/^release = '0.1'$/;"	v
 res	plugin_upload.py	/^        res = raw_input()$/;"	v
 run	fonds.py	/^    def run(self):$/;"	m	class:FiberOpticNetworkDesignSystem

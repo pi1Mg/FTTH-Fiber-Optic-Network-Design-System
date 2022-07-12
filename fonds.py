@@ -28,6 +28,7 @@
 from .fonds_dialog import FiberOpticNetworkDesignSystemDialog
 
 import os.path
+from pathlib import Path
 
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -159,6 +160,7 @@ class FiberOpticNetworkDesignSystem():
         layer.commitChanges()
 
         #QgsProject.instance().addMapLayer(layer)#, addToLegend=False)
+        QgsProject.instance().addMapLayer(layer, addToLegend=True)
         return layer, layer_data
 
     # adding feature to line layer by 2 points in list
@@ -172,7 +174,7 @@ class FiberOpticNetworkDesignSystem():
     # finding nearest feature
     # layer to find, its index, start point, if you want del founded feat
     def find_closest_feat(self, layer, qgs_index, point, del_feat):
-        nextNearestIds = qgs_index.nearestNeighbor(point, 1)
+        nextNearestIds = qgs_index.nearestNeighbor(QgsPointXY(point), 1)
         feature = layer.getFeatures(QgsFeatureRequest().setFilterFid(nextNearestIds[0]))
         nextF = QgsFeature()
         feature.nextFeature(nextF)
@@ -182,11 +184,11 @@ class FiberOpticNetworkDesignSystem():
 
     # load layer from filepath to registry QGIS and set 5514 crs
     def load_shp_layer_to_qgis(self, filepath, layer_name):
-        layer = QgsVectorLayer(filepath + layer_name + '.shp',
+        layer = QgsVectorLayer(str(Path(filepath).joinpath(layer_name + '.shp')),
                                layer_name, 'ogr')
         if not layer.isValid():
             self.iface.messageBar().pushMessage("Error", "Layer %s did not load" % layer.name(),
-                                                level=QgsMessageBar.WARNING, duration=3)
+                                                level=Qgis.Warning, duration=3)
 
         layer.setCrs(QgsCoordinateReferenceSystem(5514, QgsCoordinateReferenceSystem.EpsgCrsId))
         QgsProject.instance().addMapLayers([layer])
@@ -199,7 +201,7 @@ class FiberOpticNetworkDesignSystem():
         longest_point = QgsPoint()
         for i in range(len(multi_line_feat_geom)):
             for j in range(len(multi_line_feat_geom[i])):
-                distance = d.measureLine(point, QgsPointXY(multi_line_feat_geom[i][j]))
+                distance = d.measureLine(QgsPointXY(point), QgsPointXY(multi_line_feat_geom[i][j]))
                 if distance > longest_distance:
                     longest_distance = distance
                     longest_point = multi_line_feat_geom[i][j]
@@ -315,7 +317,7 @@ class FiberOpticNetworkDesignSystem():
         for shaft_feat in selected_shafts_feats:
             # if house is closer than 101 m and if shaft has less then 10 connections
             shaft_point = QgsPoint(shaft_feat.geometry().asPoint()[0], shaft_feat.geometry().asPoint()[1])
-            if (d.measureLine(house_point, shaft_point)) <= self.max_connections_distance:
+            if (d.measureLine(QgsPointXY(house_point), QgsPointXY(shaft_point))) <= self.max_connections_distance:
                 if shaft_feat['Houses'] < self.max_house_connection:
                     shafts_layer.startEditing()
                     house_count = shaft_feat['Houses'] + 1  # number of houses connected to shafts
@@ -336,7 +338,7 @@ class FiberOpticNetworkDesignSystem():
 
         shaft_point = QgsPoint(closest_shaft.geometry().asPoint()[0], closest_shaft.geometry().asPoint()[1])
 
-        if (d.measureLine(house_point, shaft_point)) <= self.max_connections_distance:
+        if (d.measureLine(QgsPointXY(house_point), QgsPointXY(shaft_point))) <= self.max_connections_distance:
             if closest_shaft['Houses'] < self.max_house_connection:
                 shafts_layer.startEditing()
                 house_count = closest_shaft['Houses'] + 1  # number of houses connected to shafts
@@ -359,11 +361,11 @@ class FiberOpticNetworkDesignSystem():
             for field__of_points in field_of_fields_of_points:
                 for p in field__of_points:
                     if p not in self.uses_points:
-                        if (d.measureLine(house_point, p)) < min_dist:
-                            min_dist = d.measureLine(house_point, p)
+                        if (d.measureLine(QgsPointXY(house_point), QgsPointXY(p))) < min_dist:
+                            min_dist = d.measureLine(QgsPointXY(house_point), QgsPointXY(p))
                             closer_point = p
 
-        if (d.measureLine(house_point, closer_point)) <= self.max_connections_distance:
+        if (d.measureLine(QgsPointXY(house_point), QgsPointXY(closer_point))) <= self.max_connections_distance:
             self.uses_points.add(closer_point)
             shafts_layer.startEditing()
             net_layer.startEditing()
@@ -393,10 +395,10 @@ class FiberOpticNetworkDesignSystem():
     # function create shafts for network
     def create_shafts(self):
         if not self.find_layer("shafts_point") and not self.find_layer("edges_line"):
-            dir_path = self.dlg.select_output_lineEdit.text()
+            dir_path = Path(self.dlg.select_output_lineEdit.text())
             if dir_path == "":
                 self.iface.messageBar().pushMessage("Error", "First select output directory please.",
-                                                    level=QgsMessageBar.WARNING, duration=3)
+                                                    level=Qgis.Warning, duration=3)
             else:
                 try:
                     registry = QgsProject.instance()
@@ -404,6 +406,7 @@ class FiberOpticNetworkDesignSystem():
                     ulice_layer = registry.mapLayersByName('ulice')[0]
 
                     # creating new layers
+                    print('Creating layers for shafts and net!')
                     shafts_layer = self.create_layer("Point?crs=epsg:5514", "shafts_point",
                                                   [QgsField("ID", QVariant.String), QgsField("Streets", QVariant.String),
                                                    QgsField("Houses", QVariant.String),
@@ -418,6 +421,8 @@ class FiberOpticNetworkDesignSystem():
                                                    QgsField("R|FN", QVariant.String),
                                                    QgsField("Length", QVariant.String)])[0]
                     
+                    print("shafts_layer:", shafts_layer)
+                    print("net_layer:", net_layer)
                     # work with new layers ---------------------------------------------------------------------------------
                     index_streets = QgsSpatialIndex()
                     features = ulice_layer.getFeatures()
@@ -487,8 +492,16 @@ class FiberOpticNetworkDesignSystem():
 
                     self.help_variable = net_layer
                     # save new layers as a Shapefile and load them to QGIS
-                    QgsVectorFileWriter.writeAsVectorFormat(shafts_layer, dir_path + '\shafts_point',
-                                                            "utf-8", None, "ESRI Shapefile")
+                    QgsVectorFileWriter.writeAsVectorFormatV3(
+                        # registry.mapLayersByName('shafts_point')[0],
+                        shafts_layer,
+                        str(Path(dir_path).joinpath('shafts_point')),
+                        QgsProject.instance().transformContext(),
+                        QgsVectorFileWriter.SaveVectorOptions()
+                    )
+                    # QgsVectorFileWriter.writeAsVectorFormat(shafts_layer, dir_path + '\shafts_point',
+                    # QgsVectorFileWriter.writeAsVectorFormat(shafts_layer, dir_path.joinpath('shafts_point'),
+                    #                                         "utf-8", None, "ESRI Shapefile")
                     self.load_shp_layer_to_qgis(dir_path + '/', 'shafts_point')
 
                     self.split_line_layer(ulice_layer, shafts_layer, net_layer)
@@ -497,7 +510,7 @@ class FiberOpticNetworkDesignSystem():
                         net_layer.id()
                     ).setItemVisibilityChecked(False)
                     self.iface.messageBar().pushMessage("Shafts and edges line created.",
-                                                        level=QgsMessageBar.INFO)
+                                                        level=Qgis.Info)
 
                     # fill lineEdit by coordinates of firs shaft
                     for shaft in shafts_layer.getFeatures():
@@ -509,10 +522,10 @@ class FiberOpticNetworkDesignSystem():
 
                 except IndexError:
                     self.iface.messageBar().pushMessage("Error", "Please download street and address layers from RUIAN",
-                                                        level=QgsMessageBar.WARNING, duration=3)
+                                                        level=Qgis.Warning, duration=3)
         else:
             self.iface.messageBar().pushMessage("Error", "Shaft layer or edges layer are already created",
-                                                level=QgsMessageBar.WARNING, duration=10)
+                                                level=Qgis.Warning, duration=10)
 
     # find street (edge) between two shafts (vertices)
     def find_edge(self, edge_layer, shaft_id_1, shaft_id_2):
@@ -527,7 +540,7 @@ class FiberOpticNetworkDesignSystem():
         dir_path = self.dlg.select_output_lineEdit.text()
         if dir_path == "":
             self.iface.messageBar().pushMessage("Error", "First select output directory please.",
-                                                level=QgsMessageBar.WARNING, duration=3)
+                                                level=Qgis.Warning, duration=3)
         else:
             layer = line_layer
             feats = [feat for feat in layer.getFeatures()]
@@ -564,8 +577,15 @@ class FiberOpticNetworkDesignSystem():
             # save memory edges layer to PC, remove it from QGIS and back from file
             # now layer is not empty after restart QGIS
 
-            QgsVectorFileWriter.writeAsVectorFormat(edges_line, dir_path + '\edges_line',
-                                                "utf-8", None, "ESRI Shapefile")
+            QgsVectorFileWriter.writeAsVectorFormatV3(
+                # registry.mapLayersByName('edges_line')[0],
+                edges_line,
+                str(Path(dir_path).joinpath('edges_line')),
+                QgsProject.instance().transformContext(),
+                QgsVectorFileWriter.SaveVectorOptions()
+            )
+            # QgsVectorFileWriter.writeAsVectorFormat(edges_line, dir_path + '\edges_line',
+            #                                     "utf-8", None, "ESRI Shapefile")
             self.load_shp_layer_to_qgis(dir_path + '/', 'edges_line')
 
     # Copy split geometries to layer
@@ -593,7 +613,7 @@ class FiberOpticNetworkDesignSystem():
                         int_shaft_point_2 = QgsPoint(intersect_shafts[1].geometry().asPoint()[0],
                                                      intersect_shafts[1].geometry().asPoint()[1])
                         d = QgsDistanceArea()
-                        distance = d.measureLine(int_shaft_point_1, int_shaft_point_2)
+                        distance = d.measureLine(QgsPointXY(int_shaft_point_1), QgsPointXY(int_shaft_point_2))
 
                         feat.setAttributes([id, u['Kod'], u['Nazev'], 'Path', intersect_shafts[0].id(),
                                             intersect_shafts[1].id(), -1, 0, 0, distance])
@@ -610,7 +630,7 @@ class FiberOpticNetworkDesignSystem():
                     int_shaft_point_2 = QgsPoint(intersect_shafts[1].geometry().asPoint()[0],
                                                  intersect_shafts[1].geometry().asPoint()[1])
                     d = QgsDistanceArea()
-                    distance = d.measureLine(int_shaft_point_1, int_shaft_point_2)
+                    distance = d.measureLine(QgsPointXY(int_shaft_point_1), QgsPointXY(int_shaft_point_2))
 
                     feat.setAttributes([id, u['Kod'], u['Nazev'], 'Path', intersect_shafts[0].id(),
                                         intersect_shafts[1].id(), -1, 0, 0, distance])
@@ -645,7 +665,7 @@ class FiberOpticNetworkDesignSystem():
                 dir_path = self.dlg.select_output_lineEdit.text()
                 if dir_path == "":
                     self.iface.messageBar().pushMessage("Error", "First select output directory please.",
-                                                        level=QgsMessageBar.WARNING, duration=3)
+                                                        level=Qgis.Warning, duration=3)
                 else:
                     shaft_layer = registry.mapLayersByName('shafts_point')[0]
 
@@ -653,8 +673,13 @@ class FiberOpticNetworkDesignSystem():
                     if layer_name == "":
                         layer_name = "connections_line"
 
-                    QgsVectorFileWriter.writeAsVectorFormat(self.help_variable, dir_path + '/' + layer_name,
-                                                    "utf-8", None, "ESRI Shapefile")
+                    # QgsVectorFileWriter.writeAsVectorFormat(self.help_variable, dir_path + '/' + layer_name,
+                    QgsVectorFileWriter.writeAsVectorFormatV3(
+                        registry.mapLayersByName('shafts_point')[0],
+                        str(Path(dir_path).joinpath(layer_name)),
+                        QgsProject.instance().transformContext(),
+                        QgsVectorFileWriter.SaveVectorOptions()
+                    )
                     self.load_shp_layer_to_qgis(dir_path + '/', layer_name)
                     connections_layer = registry.mapLayersByName(layer_name)[0]
 
@@ -678,14 +703,14 @@ class FiberOpticNetworkDesignSystem():
                             self.max_connections_distance = self.dlg.max_distance_spinBox.value()
                             self.max_house_connection = self.dlg.max_connections_spinBox.value()
 
-                            if (d.measureLine(house_point, shaft_point)) <= self.max_connections_distance:
+                            if (d.measureLine(QgsPointXY(house_point), QgsPointXY(shaft_point))) <= self.max_connections_distance:
                                 if int(shaft['Houses']) < int(self.max_house_connection):
                                     connections_layer.startEditing()
                                     self.net_line_ID += 1
                                     street = self.find_intersect_layer(shaft, street_layer)
                                     self.add_feature_to_line_layer(connections_layer, [house_point, shaft_point],
                                                                    [self.net_line_ID, street[0]['Kod'], street[0]['Nazev'],
-                                                                    'Connection', shaft.id(), -1, house.id(), net_type, radfib, d.measureLine(house_point, shaft_point) ])
+                                                                    'Connection', shaft.id(), -1, house.id(), net_type, radfib, d.measureLine(QgsPointXY(house_point), QgsPointXY(shaft_point))])
                                     connections_layer.commitChanges()
 
                                     shaft_layer.startEditing()
@@ -695,14 +720,14 @@ class FiberOpticNetworkDesignSystem():
                                     shaft_layer.commitChanges()
 
                     self.dlg.name_lineEdit.clear()
-                    self.iface.messageBar().pushMessage("Connections complete.", level=QgsMessageBar.INFO)
+                    self.iface.messageBar().pushMessage("Connections complete.", level=Qgis.Info)
                     self.iface.setActiveLayer(shaft_layer)
             except IndexError:
                 self.iface.messageBar().pushMessage("Error", "Need to create shafts before connecting houses",
-                                                    level=QgsMessageBar.WARNING, duration=3)
+                                                    level=Qgis.Warning, duration=3)
         else:
             self.iface.messageBar().pushMessage("Error", "Connections layer already created",
-                                                level=QgsMessageBar.WARNING, duration=10)
+                                                level=Qgis.Warning, duration=10)
 
     # create new net by kruskal algorithm
     def create_net_by_kruskal(self):
@@ -712,7 +737,7 @@ class FiberOpticNetworkDesignSystem():
             dir_path = self.dlg.select_output_lineEdit.text()
             if dir_path == "":
                 self.iface.messageBar().pushMessage("Error", "Please select output directory",
-                                                    level=QgsMessageBar.WARNING, duration=3)
+                                                    level=Qgis.Warning, duration=3)
             else:
                 shaft_layer = registry.mapLayersByName('shafts_point')[0]
 
@@ -733,8 +758,15 @@ class FiberOpticNetworkDesignSystem():
 
                 start_point = self.dlg.start_point_lineEdit.text()
                 if start_point != "":
-                    QgsVectorFileWriter.writeAsVectorFormat(net_layer, dir_path + '/' + layer_name,
-                                                "utf-8", None, "ESRI Shapefile")
+                    QgsVectorFileWriter.writeAsVectorFormatV3(
+                        # registry.mapLayersByName('shafts_point')[0],
+                        net_layer,
+                        str(Path(dir_path).joinpath(layer_name)),
+                        QgsProject.instance().transformContext(),
+                        QgsVectorFileWriter.SaveVectorOptions()
+                    )
+                    # QgsVectorFileWriter.writeAsVectorFormat(net_layer, dir_path + '/' + layer_name,
+                    #                             "utf-8", None, "ESRI Shapefile")
                     self.load_shp_layer_to_qgis(dir_path + '/', layer_name)
                     net_layer = registry.mapLayersByName(layer_name)[0]
                     edges_layer = registry.mapLayersByName('edges_line')[0]
@@ -773,13 +805,13 @@ class FiberOpticNetworkDesignSystem():
 
                     self.dlg.name_lineEdit.clear()
                     self.iface.setActiveLayer(shaft_layer)
-                    self.iface.messageBar().pushMessage("Kruskal algorithm complete.", level=QgsMessageBar.INFO)
+                    self.iface.messageBar().pushMessage("Kruskal algorithm complete.", level=Qgis.Info)
                 else:
                     self.iface.messageBar().pushMessage("Error", "Please select start point",
-                                                    level=QgsMessageBar.WARNING, duration=3)
+                                                    level=Qgis.Warning, duration=3)
         except IndexError:
             self.iface.messageBar().pushMessage("Error", "Please create shafts layer first",
-                                                level=QgsMessageBar.WARNING, duration=5)
+                                                level=Qgis.Warning, duration=5)
 
     # create new net by bellman/ford algorithm
     def create_net_by_bellman(self):
@@ -789,7 +821,7 @@ class FiberOpticNetworkDesignSystem():
             dir_path = self.dlg.select_output_lineEdit.text()
             if dir_path == "":
                 self.iface.messageBar().pushMessage("Error", "First select output directory please.",
-                                                    level=QgsMessageBar.WARNING, duration=3)
+                                                    level=Qgis.Warning, duration=3)
             else:
                 layer_name = self.dlg.name_lineEdit.text()
                 if layer_name == "":
@@ -809,8 +841,15 @@ class FiberOpticNetworkDesignSystem():
                 start_point = self.dlg.start_point_lineEdit.text()
                 if start_point != "":
                     shaft_layer = registry.mapLayersByName('shafts_point')[0]
-                    QgsVectorFileWriter.writeAsVectorFormat(net_layer, dir_path + '/' + layer_name,
-                                                        "utf-8", None, "ESRI Shapefile")
+                    QgsVectorFileWriter.writeAsVectorFormatV3(
+                        # registry.mapLayersByName('shafts_point')[0],
+                        net_layer,
+                        str(Path(dir_path).joinpath(layer_name)),
+                        QgsProject.instance().transformContext(),
+                        QgsVectorFileWriter.SaveVectorOptions()
+                    )
+                    # QgsVectorFileWriter.writeAsVectorFormat(net_layer, dir_path + '/' + layer_name,
+                    #                                     "utf-8", None, "ESRI Shapefile")
                     self.load_shp_layer_to_qgis(dir_path + '/', layer_name)
                     net_layer = registry.mapLayersByName(layer_name)[0]
                     edges_layer = registry.mapLayersByName('edges_line')[0]
@@ -846,14 +885,14 @@ class FiberOpticNetworkDesignSystem():
 
                     self.dlg.name_lineEdit.clear()
                     self.iface.setActiveLayer(shaft_layer)
-                    self.iface.messageBar().pushMessage("Bellman-Ford algorithm complete.", level=QgsMessageBar.INFO)
+                    self.iface.messageBar().pushMessage("Bellman-Ford algorithm complete.", level=Qgis.Info)
                 else:
                     self.iface.messageBar().pushMessage("Error", "Please select start point",
-                                                        level=QgsMessageBar.WARNING, duration=3)
+                                                        level=Qgis.Warning, duration=3)
 
         except IndexError:
             self.iface.messageBar().pushMessage("Error", "Please create shafts layer first",
-                                                level=QgsMessageBar.WARNING, duration=5)
+                                                level=Qgis.Warning, duration=5)
 
     # return parameters of net in dialog
     def get_net_parameters(self):
@@ -897,7 +936,7 @@ class FiberOpticNetworkDesignSystem():
 
         except IndexError:
             self.iface.messageBar().pushMessage("Error", "Please create shafts layer first",
-                                                level=QgsMessageBar.WARNING, duration=3)
+                                                level=Qgis.Warning, duration=3)
 
     # run method that performs all the real work
     def run(self):
