@@ -64,6 +64,7 @@ __init__	projectOutput.py	/^    def __init__(self, iface):$/;"	m	class:Project
 __iter__	test_database.py	/^    def __iter__(self):$/;"	m	class:DummyInterface
 __iter__	test_fonds.py	/^    def __iter__(self):$/;"	m	class:DummyInterface
 __iter__	test_project.py	/^    def __iter__(self):$/;"	m	class:DummyInterface
+_find_cross	fonds.py	/^    def _find_cross(self, line_layer, set_of_points):$/;"	m	class:FiberOpticNetworkDesignSystem
 actualization_memory_layer	database.py	/^    def actualization_memory_layer(self, memory_layer):$/;"	m	class:Database
 add_all_layers_to_w1	projectOutput.py	/^    def add_all_layers_to_w1(self):$/;"	m	class:Project
 add_all_layers_to_w2	projectOutput.py	/^    def add_all_layers_to_w2(self):$/;"	m	class:Project

@@ -209,19 +209,22 @@ class FiberOpticNetworkDesignSystem():
         return longest_point
 
     # find points where are crosses and put them to the set()
-    def find_cross(self, line_layer, set_of_points):
-        for i in line_layer.getFeatures():
+    def _find_cross(self, line_layer, set_of_points):
+        for i in list(line_layer.getFeatures()):
             geo = i.geometry()
             geo_signle_type = QgsWkbTypes.isSingleType(geo.wkbType())
             # if i.geometry() != None:
             if geo:
-                for j in line_layer.getFeatures():
+                for j in list(line_layer.getFeatures()):
                     # if j.geometry() != None:
                     if j.geometry():
                         if i.geometry().intersects(j.geometry()):
                             p = i.geometry().intersection(j.geometry()).get()[0].asPoint()
-                            # if p != QgsPoint(0,0): # if intersection is with MultiPolyline, we get point(0,0)
-                            set_of_points.add(p)
+                            # if p != QgsPointXY(0,0): # if intersection is with MultiPolyline, we get point(0,0)
+                            if p:
+                                set_of_points.add(p)
+                    else:
+                        print("j does not have geometry", geo)
 
                 # Solve problem with MultiPolyLine
                 # for every PolyLine in MultiPolyLine find start and end point
@@ -237,9 +240,26 @@ class FiberOpticNetworkDesignSystem():
                             end_point = QgsPoint(g[-1])
                             set_of_points.add(start_point)
                             set_of_points.add(end_point)
+            else:
+                print("i does not have geometry", geo)
+
+    def find_cross(self, line_layer, set_of_points):
+        print("running modified fn find_cross")
+        fts = list(line_layer.getFeatures())
+        for i in fts:
+            for j in fts:
+                if i.geometry().intersects(j.geometry()):
+                    ins = i.geometry().intersection(j.geometry())
+                    if ins.type() == 0:
+                        set_of_points.add(ins)
+                    else:
+                        for g in ins.asMultiPolyline():
+                            set_of_points.add(QgsPoint(g[0]))
+                            set_of_points.add(QgsPoint(g[-1]))
 
     # find start and end of lines and put them as points to the set()
     def find_start_end_of_lines(self, line_layer, set_of_points):
+        print("Inside of find_start_end_of_lines")
         for feature in line_layer.getFeatures():
             geo = feature.geometry()
             geo_single_type = QgsWkbTypes.isSingleType(geo.wkbType())
@@ -248,18 +268,24 @@ class FiberOpticNetworkDesignSystem():
                     geom = feature.geometry().asPolyline()
                     start_point = QgsPoint(geom[0])
                     end_point = QgsPoint(geom[-1])
+                    print('Polyline start / end point', start_point, end_point)
 
                 else: # layer ulice has PolyLine and MultiPolyLine
                     geom = feature.geometry().asMultiPolyline()
                     point = QgsPoint(geom[0][0])
                     start_point = self.find_long_distance_points(point, geom)
                     end_point = self.find_long_distance_points(start_point, geom)
+                    print(
+                        'MultiPolyline start / end point',
+                        start_point, end_point
+                    )
 
                 set_of_points.add(start_point)
                 set_of_points.add(end_point)
 
     # Create point on all ends of streets
     def put_points_on_end(self, line_layer, index_streets, point_layer):
+        print("Inside of put_points_on_end")
         pr = point_layer.dataProvider()
         point_layer.startEditing()
 
@@ -274,8 +300,9 @@ class FiberOpticNetworkDesignSystem():
         self.shafts_streets_dict = {}
         for pp in self.uses_points:
             self.shaft_ID += 1
+            print("Creating shaft id:", self.shaft_ID)
             feat = QgsFeature()
-            feat.setGeometry(QgsGeometry.fromPoint(pp))
+            feat.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(pp)))
 
             count = 0  # count of streets, which are in touch with point feat
             connected_streets = []
@@ -376,7 +403,7 @@ class FiberOpticNetworkDesignSystem():
             point_feat = QgsFeature()
             closest_street_feat = self.find_closest_feat(ulice_layer, index_streets, closer_point, False)
             point_feat.setAttributes([self.shaft_ID, 1, 1, closest_street_feat['Kod'], "No"])
-            point_feat.setGeometry(QgsGeometry.fromPoint(closer_point))
+            point_feat.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(closer_point)))
 
             pr.addFeatures([point_feat])
 
@@ -424,11 +451,12 @@ class FiberOpticNetworkDesignSystem():
                     print("shafts_layer:", shafts_layer)
                     print("net_layer:", net_layer)
                     # work with new layers ---------------------------------------------------------------------------------
-                    index_streets = QgsSpatialIndex()
-                    features = ulice_layer.getFeatures()
-                    feat = QgsFeature()
-                    while features.nextFeature(feat):
-                        index_streets.insertFeature(feat)
+                    index_streets = QgsSpatialIndex(ulice_layer.getFeatures())
+                    # index_streets = QgsSpatialIndex()
+                    # features = ulice_layer.getFeatures()
+                    # feat = QgsFeature()
+                    # while features.nextFeature(feat):
+                    #     index_streets.insertFeature(feat)
 
                     self.put_points_on_end(ulice_layer, index_streets, shafts_layer)
 
